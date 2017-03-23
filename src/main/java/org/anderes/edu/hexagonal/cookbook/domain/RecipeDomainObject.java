@@ -34,7 +34,8 @@ public class RecipeDomainObject {
     @Size(min = 1)
     private Set<IngredientDomainObject> ingredients = new HashSet<>();
     private Set<String> tags = new HashSet<String>();
-    private Optional<NutritiveValueDomanObject> nutritiveValue = Optional.empty();
+    @Valid /* nicht Optional, da Bean Validation 1.x nicht mit Optional umgehen kann */
+    private NutritiveValueDomanObject nutritiveValue;
 
     public LocalDateTime getEditingDate() {
         return editingDate;
@@ -145,16 +146,16 @@ public class RecipeDomainObject {
     }
     
     public Optional<NutritiveValueDomanObject> getNutritiveValue() {
-        return nutritiveValue;
+        return Optional.ofNullable(nutritiveValue);
     }
     
     public RecipeDomainObject setNutritiveValue(NutritiveValueDomanObject nutritiveValue) {
-        this.nutritiveValue = Optional.of(nutritiveValue);
+        this.nutritiveValue = nutritiveValue;
         return this;
     }
     
     public RecipeDomainObject removeNutritiveValue() {
-        this.nutritiveValue = Optional.empty();
+        this.nutritiveValue = null;
         return this;
     }
 }
