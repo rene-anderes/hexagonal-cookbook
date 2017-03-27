@@ -41,12 +41,16 @@ public class ValidatorServiceTest {
         // when
         final Set<ConstraintViolation<RecipeDomainObject>> constraints = validator.validate(recipe);
         // then
-        assertThat(constraints.size(), is(4));
+        assertThat(constraints.size(), is(3));
         final Iterator<ConstraintViolation<RecipeDomainObject>> iterator = constraints.iterator();
-        final ConstraintViolation<RecipeDomainObject> constraintViolation_1 = iterator.next();
-        assertThat(constraintViolation_1.getInvalidValue(), is("falsche-ID"));
-        assertThat(constraintViolation_1.getMessageTemplate(), is("{javax.validation.constraints.Pattern.message}"));
-        assertThat(constraintViolation_1.getPropertyPath().toString(), is("id"));
+//        final ConstraintViolation<RecipeDomainObject> constraintViolation_1 = iterator.next();
+//        assertThat(constraintViolation_1.getInvalidValue(), is("falsche-ID"));
+//        assertThat(constraintViolation_1.getMessageTemplate(), is("{javax.validation.constraints.Pattern.message}"));
+//        assertThat(constraintViolation_1.getPropertyPath().toString(), is("id"));
+        final ConstraintViolation<RecipeDomainObject> constraintViolation_4 = iterator.next();
+        assertThat(constraintViolation_4.getInvalidValue(), is("falsche-ID"));
+        assertThat(constraintViolation_4.getMessageTemplate(), is("{javax.validation.constraints.Size.message}"));
+        assertThat(constraintViolation_4.getPropertyPath().toString(), is("id"));
         final ConstraintViolation<RecipeDomainObject> constraintViolation_2 = iterator.next();
         assertThat(constraintViolation_2.getInvalidValue(), is(nullValue()));
         assertThat(constraintViolation_2.getMessageTemplate(), is("{javax.validation.constraints.NotNull.message}"));
@@ -55,10 +59,6 @@ public class ValidatorServiceTest {
         assertThat(constraintViolation_3.getInvalidValue(), is(nullValue()));
         assertThat(constraintViolation_3.getMessageTemplate(), is("{javax.validation.constraints.NotNull.message}"));
         assertThat(constraintViolation_3.getPropertyPath().toString(), is("noOfPeople"));
-        final ConstraintViolation<RecipeDomainObject> constraintViolation_4 = iterator.next();
-        assertThat(constraintViolation_4.getInvalidValue(), is("falsche-ID"));
-        assertThat(constraintViolation_4.getMessageTemplate(), is("{javax.validation.constraints.Size.message}"));
-        assertThat(constraintViolation_4.getPropertyPath().toString(), is("id"));
     }
 
     private RecipeDomainObject createNotValidRecipe() {

@@ -11,7 +11,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.Validate;
@@ -22,7 +21,7 @@ public class RecipeDomainObject {
 
     /* Klassenvariablen nicht Optional, da Bean Validation 1.x nicht mit Optional umgehen kann */
     
-    @NotNull @Size(min = 36, max = 36) @Pattern(regexp = "[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}")
+    @NotNull @Size(min = 36, max = 36) // @Pattern(regexp = "[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}")
     private String id = UUID.randomUUID().toString();
     @NotNull @Size(min = 5, max = 255)
     private String title;
