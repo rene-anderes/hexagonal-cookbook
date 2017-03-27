@@ -8,34 +8,56 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.lang3.Validate;
+/**
+ * Rezept
+ */
 public class RecipeDomainObject {
 
-    @NotNull
+    /* Klassenvariablen nicht Optional, da Bean Validation 1.x nicht mit Optional umgehen kann */
+    
+    @NotNull @Size(min = 36, max = 36) @Pattern(regexp = "[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}")
     private String id = UUID.randomUUID().toString();
-    @NotNull
-    @Size(min = 5, max = 255)
+    @NotNull @Size(min = 5, max = 255)
     private String title;
-    @NotNull
-    @Size(min = 5, max = 1000)
+    @NotNull @Size(min = 5, max = 10000)
     private String preparation;
-    private Optional<String> preamble = Optional.empty();
-    @NotNull
-    @Size(min = 1, max = 10)
+    @Size(min = 5, max = 5000)
+    private String preamble;
+    @NotNull @Size(min = 1, max = 10)
     private String noOfPeople;
     private LocalDateTime editingDate = LocalDateTime.now();
     private LocalDateTime addingDate = LocalDateTime.now();
-    private Optional<Integer> rating = Optional.empty();
+    @NotNull @Min(1) @Max(5)
+    private Integer rating = Integer.valueOf(0);
     @Valid
     private Set<ImageDomainObject> images = new HashSet<>();
-    @Valid
-    @Size(min = 1)
+    @Valid @Size(min = 1)
     private Set<IngredientDomainObject> ingredients = new HashSet<>();
     private Set<String> tags = new HashSet<String>();
-    @Valid /* nicht Optional, da Bean Validation 1.x nicht mit Optional umgehen kann */
+    @Valid
     private NutritiveValueDomanObject nutritiveValue;
+    @Size(min = 5, max = 5000)
+    private String hint;
+    @NotNull @Min(0) @Max(480)
+    private Integer setupTime = Integer.valueOf(0);
+    @NotNull @Min(0) @Max(480)
+    private Integer cookingTime = Integer.valueOf(0);
+
+    public RecipeDomainObject() {
+        super();
+    }
+    
+    public RecipeDomainObject(String id) {
+        this();
+        this.id = id;
+    }
 
     public LocalDateTime getEditingDate() {
         return editingDate;
@@ -51,11 +73,14 @@ public class RecipeDomainObject {
     }
 
     public Optional<Integer> getRating() {
-        return rating;
+        if (rating == 0) {
+            return Optional.empty();
+        }
+        return Optional.of(rating);
     }
 
     public RecipeDomainObject setRating(Integer rating) {
-        this.rating = Optional.of(rating);
+        this.rating = rating;
         return this;
     }
 
@@ -69,7 +94,14 @@ public class RecipeDomainObject {
     }
 
     public RecipeDomainObject addImage(ImageDomainObject image) {
+        Validate.notNull(image);
         images.add(image);
+        return this;
+    }
+    
+    public RecipeDomainObject removeImage(ImageDomainObject image) {
+        Validate.notNull(image);
+        images.remove(image);
         return this;
     }
 
@@ -114,11 +146,11 @@ public class RecipeDomainObject {
     }
 
     public Optional<String> getPreamble() {
-        return preamble;
+        return Optional.ofNullable(preamble);
     }
 
     public RecipeDomainObject setPreamble(final String preamble) {
-        this.preamble = Optional.of(preamble);
+        this.preamble = preamble;
         return this;
     }
 
@@ -136,6 +168,7 @@ public class RecipeDomainObject {
     }
 
     public RecipeDomainObject addTag(final String tag) {
+        Validate.notNull(tag);
         this.tags.add(tag);
         return this;
     }
@@ -156,6 +189,39 @@ public class RecipeDomainObject {
     
     public RecipeDomainObject removeNutritiveValue() {
         this.nutritiveValue = null;
+        return this;
+    }
+
+    public RecipeDomainObject setHint(String hint) {
+        this.hint = hint;
+        return this;
+    }
+    
+    public Optional<String> getHint() {
+        return Optional.ofNullable(hint);
+    }
+
+    public Optional<Integer> getSetupTime() {
+        if (setupTime == 0) {
+            return Optional.empty();
+        }
+        return Optional.of(setupTime);
+    }
+
+    public RecipeDomainObject setSetupTime(Integer setupTime) {
+        this.setupTime = setupTime;
+        return this;
+    }
+
+    public Optional<Integer>  getCookingTime() {
+        if (cookingTime == 0) {
+            return Optional.empty();
+        }
+        return Optional.of(cookingTime);
+    }
+
+    public RecipeDomainObject setCookingTime(Integer cookingTime) {
+        this.cookingTime = cookingTime;
         return this;
     }
 }

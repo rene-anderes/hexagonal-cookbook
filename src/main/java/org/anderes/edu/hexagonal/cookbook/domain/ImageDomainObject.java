@@ -8,19 +8,27 @@ import javax.validation.constraints.Size;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+/**
+ * Bild eines Rezepts
+ */
 public class ImageDomainObject {
 
+    /* Klassenvariablen nicht Optional, da Bean Validation 1.x nicht mit Optional umgehen kann */
+    
     @NotNull
     @Size(min = 5, max = 255)
     private String url;
-    private Optional<String> description = Optional.empty();
+    @Size(min = 1, max = 255)
+    private String description;
 
-    public ImageDomainObject() {
+    @SuppressWarnings("unused")
+    private ImageDomainObject() {
+        super();
     }
 
     public ImageDomainObject(String url, String description) {
         this(url);
-        this.description = Optional.of(description);
+        this.description = description;
     }
     
     public ImageDomainObject(String url) {
@@ -32,16 +40,8 @@ public class ImageDomainObject {
         return url;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public Optional<String> getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = Optional.of(description);
+        return Optional.ofNullable(description);
     }
 
     @Override
@@ -67,7 +67,6 @@ public class ImageDomainObject {
             return false;
         }
         ImageDomainObject rhs = (ImageDomainObject) obj;
-        return new EqualsBuilder().append(url, rhs.url)
-                        .append(description.orElse(""), rhs.description.orElse("")).isEquals();
+        return new EqualsBuilder().append(url, rhs.url).append(description, rhs.description).isEquals();
     }
 }
