@@ -1,5 +1,6 @@
 package org.anderes.edu.hexagonal.cookbook.domain;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
@@ -11,10 +12,11 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 /**
  * Bild eines Rezepts
  */
-public class ImageDomainObject {
+public class ImageDomainObject implements Serializable {
 
     /* Klassenvariablen nicht Optional, da Bean Validation 1.x nicht mit Optional umgehen kann */
     
+    private static final long serialVersionUID = 1L;
     @NotNull
     @Size(min = 5, max = 255)
     private String url;

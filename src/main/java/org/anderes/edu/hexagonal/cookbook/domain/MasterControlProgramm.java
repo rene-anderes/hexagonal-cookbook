@@ -1,6 +1,7 @@
-package org.anderes.edu.hexagonal.cookbook.mediation;
+package org.anderes.edu.hexagonal.cookbook.domain;
 
 import org.anderes.edu.hexagonal.cookbook.domain.CookbookConfig;
+import org.anderes.edu.hexagonal.cookbook.mediation.UserInterfaceRecipeService;
 import org.anderes.edu.hexagonal.cookbook.port.RepositoryPort;
 import org.apache.commons.lang3.Validate;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -30,9 +31,13 @@ public class MasterControlProgramm {
         this.repositoryPort = port;
     }
     
-    /*package*/ RepositoryPort getRepositoryPort() {
+    RepositoryPort getRepositoryPort() {
         Validate.notNull(repositoryPort, "Es wurde keine '%s' registriert!", RepositoryPort.class);
         return repositoryPort;
+    }
+    
+    public UserInterfaceRecipeService getUserInterfaceRecipeService() {
+        return ctx.getBean(UserInterfaceRecipeService.class);
     }
 
     @Override
@@ -40,6 +45,4 @@ public class MasterControlProgramm {
         super.finalize();
         ctx.close();
     }
-    
-    
 }

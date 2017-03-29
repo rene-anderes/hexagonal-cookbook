@@ -1,41 +1,52 @@
 package org.anderes.edu.hexagonal.cookbook.mediation;
 
-import java.util.Set;
-
-import javax.inject.Inject;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-
 import org.anderes.edu.hexagonal.cookbook.domain.RecipeDomainObject;
-import org.anderes.edu.hexagonal.cookbook.domain.RepositoryRecipeService;
-import org.anderes.edu.hexagonal.cookbook.domain.ValidatorService;
-import org.anderes.edu.hexagonal.cookbook.port.RepositoryPort;
 import org.anderes.edu.hexagonal.cookbook.port.UserInterfacePort;
 
-public class UserInterfaceRecipeService {
+public interface UserInterfaceRecipeService {
 
-    private RepositoryRecipeService repositoryService;
-    private ValidatorService validatorService;
+    /**
+     * Anfrage für eine Rezept mit der entsprechenden ID
+     * 
+     * @param id
+     *            ID des gewünschten rezepts
+     * @param userInterfacePort
+     *            UI-Port
+     * @see UserInterfacePort#showRecipe(RecipeDomainObject)
+     * @throws CookbookException,
+     *             wenn das Rezept mit dieser ID nicht existiert
+     */
+    void getRecipeById(String id, final UserInterfacePort userInterfacePort);
 
-    @Inject
-    public UserInterfaceRecipeService(RepositoryRecipeService repositoryService, ValidatorService validatorService) {
-        this.repositoryService = repositoryService;
-        this.validatorService = validatorService;
-    }
+    /**
+     * Aktualisiert ein bestehendes Rezept
+     * 
+     * @param recipe
+     *            Rezept mit aktuellen Daten
+     * 
+     * @throws CookbookException,
+     *             wenn das Rezept nicht existiert oder die Daten nicht korrekt sind
+     */
+    void setRecipe(final RecipeDomainObject recipe);
 
-    public void getRecipeById(String id, final UserInterfacePort userInterfacePort) {
-        final RepositoryPort repositoryPort = MasterControlProgramm.getInstance().getRepositoryPort();
-        final RecipeDomainObject recipe = repositoryService.findRecipeById(id, repositoryPort);
-        userInterfacePort.showRecipe(recipe);
-    }
-    
-    public void setRecipe(final RecipeDomainObject recipe) {
-        final Set<ConstraintViolation<RecipeDomainObject>> constraints = validatorService.validate(recipe);
-        if (!constraints.isEmpty()) {
-            throw new ConstraintViolationException(constraints);
-        }
-        final RepositoryPort repositoryPort = MasterControlProgramm.getInstance().getRepositoryPort();
-        repositoryService.updateRecipe(recipe, repositoryPort);
-    }
+    /**
+     * Speichert ein neues Rezept
+     * 
+     * @param recipe
+     *            Neues Rezept
+     * 
+     * @throws CookbookException,
+     *             wenn das Rezept bereits existiert oder die Daten nicht korrekt sind
+     */
+    void addRecipe(final RecipeDomainObject recipe);
+
+    /**
+     * Anfrage für eine Liste von ID's/Rezepttitel
+     * 
+     * @param userInterfacePort
+     *            UI-Port
+     * @see UserInterfacePort#showRecipeOverview(java.util.Map)
+     */
+    void getRecipeOverview(final UserInterfacePort userInterfacePort);
 
 }

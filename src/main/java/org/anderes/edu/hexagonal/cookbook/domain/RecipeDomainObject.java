@@ -1,5 +1,6 @@
 package org.anderes.edu.hexagonal.cookbook.domain;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,17 +12,21 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 /**
  * Rezept
  */
-public class RecipeDomainObject {
+public class RecipeDomainObject implements Serializable {
 
     /* Klassenvariablen nicht Optional, da Bean Validation 1.x nicht mit Optional umgehen kann */
-    
-    @NotNull @Size(min = 36, max = 36) // @Pattern(regexp = "[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}")
+
+    private static final long serialVersionUID = 1L;
+    @NotNull @Size(min = 36, max = 36) @Pattern(regexp = "[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}")
     private String id = UUID.randomUUID().toString();
     @NotNull @Size(min = 5, max = 255)
     private String title;
@@ -176,8 +181,8 @@ public class RecipeDomainObject {
         this.tags.remove(tag);
         return this;
     }
-    
-    public Optional<NutritiveValueDomanObject> getNutritiveValue() {
+
+    public Optional<NutritiveValueDomanObject> getNutritiveValueIfExists() {
         return Optional.ofNullable(nutritiveValue);
     }
     
@@ -222,5 +227,37 @@ public class RecipeDomainObject {
     public RecipeDomainObject setCookingTime(Integer cookingTime) {
         this.cookingTime = cookingTime;
         return this;
+    }
+    
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(id).append(title).append(preparation)
+                        .append(preamble).append(noOfPeople).append(editingDate)
+                        .append(addingDate).append(rating).append(images)
+                        .append(ingredients).append(tags).append(nutritiveValue)
+                        .append(hint).append(setupTime).append(cookingTime)
+                        .toHashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        RecipeDomainObject rhs = (RecipeDomainObject) obj;
+        return new EqualsBuilder().append(id, rhs.id).append(title, rhs.title).append(preparation, rhs.preparation)
+                        .append(preamble, rhs.preamble).append(noOfPeople, rhs.noOfPeople).append(editingDate, rhs.editingDate)
+                        .append(addingDate, rhs.addingDate).append(rating, rhs.rating).append(images, rhs.images)
+                        .append(ingredients, rhs.ingredients).append(tags, rhs.tags)
+                        .append(nutritiveValue, rhs.nutritiveValue)
+                        .append(hint, rhs.hint).append(setupTime, rhs.setupTime).append(cookingTime, rhs.cookingTime)
+                        .isEquals();
     }
 }

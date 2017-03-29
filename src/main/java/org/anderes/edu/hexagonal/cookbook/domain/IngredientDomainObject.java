@@ -1,5 +1,6 @@
 package org.anderes.edu.hexagonal.cookbook.domain;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
@@ -13,10 +14,11 @@ import org.apache.commons.lang3.text.StrBuilder;
 /**
  * Zutat
  */
-public class IngredientDomainObject {
+public class IngredientDomainObject implements Serializable {
 
     /* Klassenvariablen nicht Optional, da Bean Validation 1.x nicht mit Optional umgehen kann */
     
+    private static final long serialVersionUID = 1L;
     @Size(min = 1, max = 25)
     private String portion;
     @NotNull

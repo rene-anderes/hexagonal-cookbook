@@ -3,11 +3,10 @@ package org.anderes.edu.hexagonal.cookbook.domain;
 import static java.time.Month.MARCH;
 import static org.anderes.edu.hexagonal.cookbook.domain.RecipeBuilder.createRecipe;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.time.LocalDateTime;
-import java.util.Iterator;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -41,24 +40,35 @@ public class ValidatorServiceTest {
         // when
         final Set<ConstraintViolation<RecipeDomainObject>> constraints = validator.validate(recipe);
         // then
-        assertThat(constraints.size(), is(3));
-        final Iterator<ConstraintViolation<RecipeDomainObject>> iterator = constraints.iterator();
-//        final ConstraintViolation<RecipeDomainObject> constraintViolation_1 = iterator.next();
-//        assertThat(constraintViolation_1.getInvalidValue(), is("falsche-ID"));
-//        assertThat(constraintViolation_1.getMessageTemplate(), is("{javax.validation.constraints.Pattern.message}"));
-//        assertThat(constraintViolation_1.getPropertyPath().toString(), is("id"));
-        final ConstraintViolation<RecipeDomainObject> constraintViolation_4 = iterator.next();
-        assertThat(constraintViolation_4.getInvalidValue(), is("falsche-ID"));
-        assertThat(constraintViolation_4.getMessageTemplate(), is("{javax.validation.constraints.Size.message}"));
-        assertThat(constraintViolation_4.getPropertyPath().toString(), is("id"));
-        final ConstraintViolation<RecipeDomainObject> constraintViolation_2 = iterator.next();
-        assertThat(constraintViolation_2.getInvalidValue(), is(nullValue()));
-        assertThat(constraintViolation_2.getMessageTemplate(), is("{javax.validation.constraints.NotNull.message}"));
-        assertThat(constraintViolation_2.getPropertyPath().toString(), is("preparation"));
-        final ConstraintViolation<RecipeDomainObject> constraintViolation_3 = iterator.next();
-        assertThat(constraintViolation_3.getInvalidValue(), is(nullValue()));
-        assertThat(constraintViolation_3.getMessageTemplate(), is("{javax.validation.constraints.NotNull.message}"));
-        assertThat(constraintViolation_3.getPropertyPath().toString(), is("noOfPeople"));
+        assertThat(constraints.size(), is(4));
+        Optional<ConstraintViolation<RecipeDomainObject>> find1 = 
+                        constraints.stream()
+                            .filter(c -> c.getPropertyPath().toString().equals("id"))
+                            .filter(c -> c.getInvalidValue().equals("falsche-ID"))
+                            .filter(c -> c.getMessageTemplate().equals("{javax.validation.constraints.Pattern.message}"))
+                            .findAny();
+        assertThat(find1.isPresent(), is(true));
+        Optional<ConstraintViolation<RecipeDomainObject>> find2 = 
+                        constraints.stream()
+                            .filter(c -> c.getPropertyPath().toString().equals("id"))
+                            .filter(c -> c.getInvalidValue().equals("falsche-ID"))
+                            .filter(c -> c.getMessageTemplate().equals("{javax.validation.constraints.Size.message}"))
+                            .findAny();
+        assertThat(find2.isPresent(), is(true));
+        Optional<ConstraintViolation<RecipeDomainObject>> find3 = 
+                        constraints.stream()
+                            .filter(c -> c.getPropertyPath().toString().equals("noOfPeople"))
+                            .filter(c -> c.getInvalidValue() == null)
+                            .filter(c -> c.getMessageTemplate().equals("{javax.validation.constraints.NotNull.message}"))
+                            .findAny();
+        assertThat(find3.isPresent(), is(true));
+        Optional<ConstraintViolation<RecipeDomainObject>> find4 = 
+                        constraints.stream()
+                            .filter(c -> c.getPropertyPath().toString().equals("preparation"))
+                            .filter(c -> c.getInvalidValue() == null)
+                            .filter(c -> c.getMessageTemplate().equals("{javax.validation.constraints.NotNull.message}"))
+                            .findAny();
+        assertThat(find4.isPresent(), is(true));
     }
 
     private RecipeDomainObject createNotValidRecipe() {

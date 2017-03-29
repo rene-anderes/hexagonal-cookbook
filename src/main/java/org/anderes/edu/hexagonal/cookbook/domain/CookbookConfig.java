@@ -8,17 +8,17 @@ import org.springframework.context.annotation.Configuration;
 public class CookbookConfig {
 
     @Bean
-    public RepositoryRecipeService getRepositoryService() {
+    /*package*/ RepositoryRecipeService getRepositoryService() {
         return new RepositoryRecipeService(getValidatorServeice());
     }
     
     @Bean
-    public ValidatorService getValidatorServeice() {
+    /*package*/ ValidatorService getValidatorServeice() {
         return new ValidatorService();
     }
     
     @Bean
-    public UserInterfaceRecipeService getUserInterfaceRecipeService() {
-        return new UserInterfaceRecipeService(getRepositoryService(), getValidatorServeice());
+    /*package*/ UserInterfaceRecipeService getUserInterfaceRecipeService() {
+        return new UserInterfaceRecipeServiceImpl(getRepositoryService(), getValidatorServeice());
     }
 }
