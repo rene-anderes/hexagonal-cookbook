@@ -1,4 +1,4 @@
-package org.anderes.edu.hexagonal.cookbook.domain;
+package org.anderes.edu.hexagonal.cookbook.core;
 
 import java.util.Set;
 
@@ -6,6 +6,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import org.anderes.edu.hexagonal.cookbook.domain.RecipeDomainObject;
 import org.apache.commons.lang3.Validate;
 
 public class ValidatorService {

@@ -1,6 +1,6 @@
 package org.anderes.edu.hexagonal.cookbook.mediation;
 
-import org.anderes.edu.hexagonal.cookbook.domain.MasterControlProgram;
+import org.anderes.edu.hexagonal.cookbook.core.MasterControlProgram;
 import org.anderes.edu.hexagonal.cookbook.port.RepositoryPort;
 
 public abstract class Cookbook {

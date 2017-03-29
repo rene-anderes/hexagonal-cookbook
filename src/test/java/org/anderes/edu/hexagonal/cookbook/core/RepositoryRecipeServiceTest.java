@@ -1,7 +1,7 @@
-package org.anderes.edu.hexagonal.cookbook.domain;
+package org.anderes.edu.hexagonal.cookbook.core;
 
 import static java.time.Month.MARCH;
-import static org.anderes.edu.hexagonal.cookbook.domain.RecipeBuilder.createRecipe;
+import static org.anderes.edu.hexagonal.cookbook.core.RecipeBuilder.createRecipe;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
@@ -11,6 +11,12 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import org.anderes.edu.hexagonal.cookbook.core.CookbookConfig;
+import org.anderes.edu.hexagonal.cookbook.core.MasterControlProgram;
+import org.anderes.edu.hexagonal.cookbook.core.RepositoryRecipeService;
+import org.anderes.edu.hexagonal.cookbook.domain.IngredientDomainObject;
+import org.anderes.edu.hexagonal.cookbook.domain.NutritiveValueDomanObject;
+import org.anderes.edu.hexagonal.cookbook.domain.RecipeDomainObject;
 import org.anderes.edu.hexagonal.cookbook.mediation.CookbookException;
 import org.anderes.edu.hexagonal.cookbook.port.RepositoryPort;
 import org.apache.commons.lang3.SerializationUtils;

@@ -1,6 +1,11 @@
-package org.anderes.edu.hexagonal.cookbook.domain;
+package org.anderes.edu.hexagonal.cookbook.core;
 
 import java.time.LocalDateTime;
+
+import org.anderes.edu.hexagonal.cookbook.domain.IngredientDomainObject;
+import org.anderes.edu.hexagonal.cookbook.domain.NutritiveValueDomanObject;
+import org.anderes.edu.hexagonal.cookbook.domain.RecipeDomainObject;
+
 import static java.time.Month.*;
 
 public abstract class RecipeBuilder {

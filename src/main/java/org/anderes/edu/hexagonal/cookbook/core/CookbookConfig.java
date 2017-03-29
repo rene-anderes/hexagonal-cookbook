@@ -1,4 +1,4 @@
-package org.anderes.edu.hexagonal.cookbook.domain;
+package org.anderes.edu.hexagonal.cookbook.core;
 
 import org.anderes.edu.hexagonal.cookbook.mediation.UserInterfaceRecipeService;
 import org.springframework.context.annotation.Bean;

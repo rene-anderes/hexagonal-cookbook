@@ -1,6 +1,6 @@
-package org.anderes.edu.hexagonal.cookbook.domain;
+package org.anderes.edu.hexagonal.cookbook.core;
 
-import org.anderes.edu.hexagonal.cookbook.domain.CookbookConfig;
+import org.anderes.edu.hexagonal.cookbook.core.CookbookConfig;
 import org.anderes.edu.hexagonal.cookbook.mediation.UserInterfaceRecipeService;
 import org.anderes.edu.hexagonal.cookbook.port.RepositoryPort;
 import org.apache.commons.lang3.Validate;

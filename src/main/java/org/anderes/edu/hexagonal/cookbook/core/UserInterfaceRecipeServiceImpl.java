@@ -1,4 +1,4 @@
-package org.anderes.edu.hexagonal.cookbook.domain;
+package org.anderes.edu.hexagonal.cookbook.core;
 
 import java.util.Map;
 import java.util.Set;
@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
+import org.anderes.edu.hexagonal.cookbook.domain.RecipeDomainObject;
 import org.anderes.edu.hexagonal.cookbook.mediation.CookbookException;
 import org.anderes.edu.hexagonal.cookbook.mediation.UserInterfaceRecipeService;
 import org.anderes.edu.hexagonal.cookbook.port.RepositoryPort;
