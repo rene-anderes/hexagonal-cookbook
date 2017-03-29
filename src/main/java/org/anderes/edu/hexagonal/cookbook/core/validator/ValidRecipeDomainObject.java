@@ -1,4 +1,4 @@
-package org.anderes.edu.hexagonal.cookbook.validator;
+package org.anderes.edu.hexagonal.cookbook.core.validator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
