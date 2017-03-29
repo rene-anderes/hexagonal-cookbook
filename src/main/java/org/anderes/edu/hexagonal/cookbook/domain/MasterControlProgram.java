@@ -4,24 +4,28 @@ import org.anderes.edu.hexagonal.cookbook.domain.CookbookConfig;
 import org.anderes.edu.hexagonal.cookbook.mediation.UserInterfaceRecipeService;
 import org.anderes.edu.hexagonal.cookbook.port.RepositoryPort;
 import org.apache.commons.lang3.Validate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-public class MasterControlProgramm {
+public class MasterControlProgram {
 
-    private static MasterControlProgramm instance;
+    private final Logger logger = LogManager.getLogger(this.getClass().getName());
+    private static MasterControlProgram instance;
     private RepositoryPort repositoryPort;
     private final AnnotationConfigApplicationContext ctx;
 
-    public MasterControlProgramm() {
+    public MasterControlProgram() {
         super();
         ctx = new AnnotationConfigApplicationContext();
         ctx.register(CookbookConfig.class);
         ctx.refresh();
+        logger.info("Master Control Program initialized");
     }
     
-    public static MasterControlProgramm getInstance() {
+    public static MasterControlProgram getInstance() {
         if (instance == null) {
-            instance = new MasterControlProgramm();
+            instance = new MasterControlProgram();
         }
         return instance;
     }
@@ -29,6 +33,7 @@ public class MasterControlProgramm {
     public void registerRepositoryPort(final RepositoryPort port) {
         Validate.notNull(port);
         this.repositoryPort = port;
+        logger.info("Register new RepositoryPort: " + port.getVersion());
     }
     
     RepositoryPort getRepositoryPort() {

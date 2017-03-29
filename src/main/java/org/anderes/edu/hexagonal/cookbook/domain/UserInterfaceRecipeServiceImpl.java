@@ -25,7 +25,7 @@ public class UserInterfaceRecipeServiceImpl implements UserInterfaceRecipeServic
 
     @Override
     public void getRecipeById(String id, final UserInterfacePort userInterfacePort) {
-        final RepositoryPort repositoryPort = MasterControlProgramm.getInstance().getRepositoryPort();
+        final RepositoryPort repositoryPort = MasterControlProgram.getInstance().getRepositoryPort();
         final RecipeDomainObject recipe = repositoryService.findRecipeById(id, repositoryPort);
         userInterfacePort.showRecipe(recipe);
     }
@@ -36,7 +36,7 @@ public class UserInterfaceRecipeServiceImpl implements UserInterfaceRecipeServic
         if (!constraints.isEmpty()) {
             throw new CookbookException(new ConstraintViolationException(constraints));
         }
-        final RepositoryPort repositoryPort = MasterControlProgramm.getInstance().getRepositoryPort();
+        final RepositoryPort repositoryPort = MasterControlProgram.getInstance().getRepositoryPort();
         repositoryService.updateRecipe(recipe, repositoryPort);
     }
 
@@ -46,13 +46,13 @@ public class UserInterfaceRecipeServiceImpl implements UserInterfaceRecipeServic
         if (!constraints.isEmpty()) {
             throw new CookbookException(new ConstraintViolationException(constraints));
         }
-        final RepositoryPort repositoryPort = MasterControlProgramm.getInstance().getRepositoryPort();
+        final RepositoryPort repositoryPort = MasterControlProgram.getInstance().getRepositoryPort();
         repositoryService.addNewRecipe(recipe, repositoryPort);
     }
 
     @Override
     public void getRecipeOverview(final UserInterfacePort userInterfacePort) {
-        final RepositoryPort repositoryPort = MasterControlProgramm.getInstance().getRepositoryPort();
+        final RepositoryPort repositoryPort = MasterControlProgram.getInstance().getRepositoryPort();
         final Map<String, String> values = repositoryService.getRecipeOverview(repositoryPort);
         userInterfacePort.showRecipeOverview(values);
     }

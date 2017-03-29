@@ -42,7 +42,8 @@ public class UserInterfaceRecipeServiceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        MasterControlProgramm.getInstance().registerRepositoryPort(repositoryPort);
+        when(repositoryPort.getVersion()).thenReturn("Mock-Object for Testing");
+        MasterControlProgram.getInstance().registerRepositoryPort(repositoryPort);
     }
 
     @Test
@@ -57,6 +58,9 @@ public class UserInterfaceRecipeServiceTest {
         // then
         verify(userInterfacePort).showRecipe(recipe);
         verify(repositoryPort).findRecipeById(recipe.getId());
+        verify(repositoryPort).getVersion();
+        verifyNoMoreInteractions(repositoryPort);
+        verifyNoMoreInteractions(userInterfacePort);
     }
     
     @Test
@@ -69,8 +73,11 @@ public class UserInterfaceRecipeServiceTest {
         userInterfaceService.setRecipe(recipe);
         
         // then
+        verifyNoMoreInteractions(userInterfacePort);
         verify(repositoryPort).findRecipeById(recipe.getId());
         verify(repositoryPort).updateRecipe(recipe);
+        verify(repositoryPort).getVersion();
+        verifyNoMoreInteractions(repositoryPort);
     }
     
     @Test
@@ -87,6 +94,8 @@ public class UserInterfaceRecipeServiceTest {
         // then
         verify(repositoryPort).findRecipeById(recipe.getId());
         verify(repositoryPort).updateRecipe(recipe);
+        verify(repositoryPort).getVersion();
+        verifyNoMoreInteractions(repositoryPort);
     }
         
     @Test
@@ -102,6 +111,7 @@ public class UserInterfaceRecipeServiceTest {
         verifyZeroInteractions(userInterfacePort);
         verify(repositoryPort).findRecipeById(recipe.getId());
         verify(repositoryPort).addNewRecipe(recipe);
+        verify(repositoryPort).getVersion();
         verifyNoMoreInteractions(repositoryPort);
     }
     
@@ -119,6 +129,7 @@ public class UserInterfaceRecipeServiceTest {
         // then
         verify(userInterfacePort, times(1)).showRecipeOverview(values);
         verify(repositoryPort, times(1)).getRecipeOverview();
+        verify(repositoryPort).getVersion();
         verifyNoMoreInteractions(userInterfacePort);
         verifyNoMoreInteractions(repositoryPort);
     }

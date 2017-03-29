@@ -39,7 +39,8 @@ public class RepositoryRecipeServiceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        MasterControlProgramm.getInstance().registerRepositoryPort(repositoryPort);
+        when(repositoryPort.getVersion()).thenReturn("Mock-Object for Testing");
+        MasterControlProgram.getInstance().registerRepositoryPort(repositoryPort);
     }
     
     @Test
@@ -65,6 +66,7 @@ public class RepositoryRecipeServiceTest {
         // when
         repositoryService.findRecipeById("Wrong-ID", repositoryPort);
         verify(repositoryPort, times(1)).findRecipeById("Wrong-ID");
+        verify(repositoryPort).getVersion();
         verifyNoMoreInteractions(repositoryPort);
     }
     
@@ -79,6 +81,7 @@ public class RepositoryRecipeServiceTest {
         // when
         repositoryService.findRecipeById("12345678-1234-1234-4321-123456789abc", repositoryPort);
         verify(repositoryPort, times(1)).findRecipeById("12345678-1234-1234-4321-123456789abc");
+        verify(repositoryPort).getVersion();
         verifyNoMoreInteractions(repositoryPort);
     }
     
@@ -94,6 +97,7 @@ public class RepositoryRecipeServiceTest {
         // verify
         verify(repositoryPort, times(1)).findRecipeById(recipe.getId());
         verify(repositoryPort, times(1)).updateRecipe(recipe);
+        verify(repositoryPort).getVersion();
         verifyNoMoreInteractions(repositoryPort);
     }
     
@@ -109,6 +113,7 @@ public class RepositoryRecipeServiceTest {
         
         // verify
         verify(repositoryPort, times(1)).findRecipeById(recipe.getId());
+        verify(repositoryPort).getVersion();
         verifyNoMoreInteractions(repositoryPort);
     }
     
@@ -124,6 +129,7 @@ public class RepositoryRecipeServiceTest {
         // verify
         verify(repositoryPort, times(1)).findRecipeById(recipe.getId());
         verify(repositoryPort, times(1)).addNewRecipe(recipe);
+        verify(repositoryPort).getVersion();
         verifyNoMoreInteractions(repositoryPort);
     }
     
@@ -140,6 +146,7 @@ public class RepositoryRecipeServiceTest {
         
         // verify
         verify(repositoryPort, times(1)).findRecipeById(recipe.getId());
+        verify(repositoryPort).getVersion();
         verifyNoMoreInteractions(repositoryPort);
     }
     

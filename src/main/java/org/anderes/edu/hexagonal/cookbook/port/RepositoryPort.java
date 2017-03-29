@@ -17,4 +17,6 @@ public interface RepositoryPort {
 
     Map<String, String> getRecipeOverview();
 
+    String getVersion();
+
 }
