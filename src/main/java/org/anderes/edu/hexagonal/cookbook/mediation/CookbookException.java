@@ -56,12 +56,12 @@ public final class CookbookException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return exceptionType.getMessage() + " | " + super.getMessage();
+        return exceptionType.getMessage();
     }
 
     @Override
     public String getLocalizedMessage() {
-        return exceptionType.getMessage();
+        return exceptionType.getMessage() + " | " + super.getMessage();
     }
 
     @Override

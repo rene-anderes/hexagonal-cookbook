@@ -1,7 +1,7 @@
 package org.anderes.edu.hexagonal.cookbook.core;
 
 import static java.time.Month.MARCH;
-import static org.anderes.edu.hexagonal.cookbook.core.RecipeBuilder.createRecipe;
+import static org.anderes.edu.hexagonal.cookbook.core.RecipeBuilder.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -27,6 +27,16 @@ public class ValidatorServiceTest {
         validator = new ValidatorService();
     }
 
+    @Test
+    public void shouldBeCorrectRandomRecipeDomainObject() {
+        // given
+        final RecipeDomainObject recipe = createRandomRecipe();
+        // when
+        final Set<ConstraintViolation<RecipeDomainObject>> constraints = validator.validate(recipe);
+        // then
+        assertThat(constraints.size(), is(0));
+    }
+    
     @Test
     public void shouldBeCorrectRecipeDomainObject() {
         // given

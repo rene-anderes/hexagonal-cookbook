@@ -32,7 +32,7 @@ public class RepositoryRecipeService {
         final RecipeDomainObject recipe = recipeOptional.orElseThrow(() -> new CookbookException(NO_RESULT));
         final Set<ConstraintViolation<RecipeDomainObject>> constraints = validatorService.validate(recipe);
         if (!constraints.isEmpty()) {
-            logger.warn("Incorrect data from the database!"); 
+            logger.warn("Incorrect data from the repository!"); 
             throw new CookbookException(new ConstraintViolationException(constraints));
         }
         return recipe;
@@ -58,6 +58,23 @@ public class RepositoryRecipeService {
 
     public Map<String, String> getRecipeOverview(final RepositoryPort repositoryPort) {
         return repositoryPort.getRecipeOverview();
+    }
+
+    public void removeRecipe(final RecipeDomainObject recipe, final RepositoryPort repositoryPort) {
+        final Optional<RecipeDomainObject> findRecipe = repositoryPort.findRecipeById(recipe.getId());
+        if (findRecipe.isPresent()) {
+            repositoryPort.removeRecipe(recipe);
+        }
+    }
+
+    public Set<RecipeDomainObject> findRecipesByTags(final Set<String> tags, final RepositoryPort repositoryPort) {
+        final Set<RecipeDomainObject> recipes = repositoryPort.findRecipesByTags(tags);
+        Optional<RecipeDomainObject> notValidRecipe = recipes.stream().filter(recipe -> !validatorService.validate(recipe).isEmpty()).findAny();
+        if (notValidRecipe.isPresent()) {
+            logger.warn("Incorrect data from the repository!"); 
+            throw new CookbookException(CONSTRAINT_VIOLATION);
+        }
+        return recipes;
     }
 
 }

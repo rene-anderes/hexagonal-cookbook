@@ -1,7 +1,7 @@
 package org.anderes.edu.hexagonal.cookbook.core;
 
 import static java.time.Month.MARCH;
-import static org.anderes.edu.hexagonal.cookbook.core.RecipeBuilder.createRecipe;
+import static org.anderes.edu.hexagonal.cookbook.core.RecipeBuilder.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
 
@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -134,6 +137,24 @@ public class UserInterfaceRecipeServiceTest {
         // then
         verify(userInterfacePort, times(1)).showRecipeOverview(values);
         verify(repositoryPort, times(1)).getRecipeOverview();
+        verify(repositoryPort).getVersion();
+        verifyNoMoreInteractions(userInterfacePort);
+        verifyNoMoreInteractions(repositoryPort);
+    }
+    
+    @Test
+    public void shouldBeRecipesByTags() {
+        // given
+        final Set<RecipeDomainObject> recipeSet = createRandomRecipeSet(3);
+        final Set<String> tags = Stream.of("vegetarisch", "indisch").collect(Collectors.toSet());;
+        when(repositoryPort.findRecipesByTags(tags)).thenReturn(recipeSet);
+        
+        // when
+        userInterfaceService.getRecipesByTags(tags, userInterfacePort);
+        
+        // then
+        verify(userInterfacePort, times(1)).showRecipes(recipeSet);
+        verify(repositoryPort, times(1)).findRecipesByTags(tags);
         verify(repositoryPort).getVersion();
         verifyNoMoreInteractions(userInterfacePort);
         verifyNoMoreInteractions(repositoryPort);

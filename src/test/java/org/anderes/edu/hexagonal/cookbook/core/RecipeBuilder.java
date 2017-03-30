@@ -1,10 +1,17 @@
 package org.anderes.edu.hexagonal.cookbook.core;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
+import org.anderes.edu.hexagonal.cookbook.domain.ImageDomainObject;
 import org.anderes.edu.hexagonal.cookbook.domain.IngredientDomainObject;
 import org.anderes.edu.hexagonal.cookbook.domain.NutritiveValueDomanObject;
 import org.anderes.edu.hexagonal.cookbook.domain.RecipeDomainObject;
+import static org.apache.commons.lang3.RandomStringUtils.*;
+import static org.apache.commons.lang3.RandomUtils.*;
+
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.time.Month.*;
 
@@ -34,8 +41,34 @@ public abstract class RecipeBuilder {
             .addIngredient(new IngredientDomainObject("0.5 dl", "Rahm"))
             .addIngredient(new IngredientDomainObject("1 Esslöffel", "Bratbutter"))
             .addIngredient(new IngredientDomainObject("0.5 Bund", "Peterli", "glattblättrig"))
-            .addIngredient(new IngredientDomainObject("50 g", "Mandelblättchen"));
+            .addIngredient(new IngredientDomainObject("50 g", "Mandelblättchen"))
+            .addImage(new ImageDomainObject("rezept.jpg", "Curry-Spinat mit Mandel-Kartoffeln"))
+            .addTag("vegetarisch").addTag("indisch");
+            
         return recipe;
+    }
+    
+    public static RecipeDomainObject createRandomRecipe() {
+        final RecipeDomainObject recipe = new RecipeDomainObject();
+        recipe.setTitle(randomAlphabetic(100))
+        .setPreamble(randomAlphabetic(1000))
+        .setNoOfPeople(randomAlphanumeric(5))
+        .setPreparation(randomAlphabetic(1000))
+        .setHint(randomAlphabetic(100))
+        .setNutritiveValue(new NutritiveValueDomanObject(nextInt(), nextInt(), nextInt(), nextInt()))
+        .setRating(nextInt(1, 6))
+        .setAddingDate(LocalDateTime.now())
+        .setEditingDate(LocalDateTime.now())
+        .addIngredient(new IngredientDomainObject(randomAlphabetic(10), randomAlphabetic(100), randomAlphabetic(100)))
+        .addIngredient(new IngredientDomainObject(randomAlphabetic(10), randomAlphabetic(100), randomAlphabetic(100)))
+        .addIngredient(new IngredientDomainObject(randomAlphabetic(10), randomAlphabetic(100)))
+        .addImage(new ImageDomainObject(randomAlphabetic(100), randomAlphabetic(100)))
+        .addTag(randomAlphabetic(10)).addTag(randomAlphabetic(10));
+        return recipe;
+    }
+    
+    public static Set<RecipeDomainObject> createRandomRecipeSet(int count) {
+        return Stream.generate(() -> createRandomRecipe()).limit(count).collect(Collectors.toSet());
     }
 
 }

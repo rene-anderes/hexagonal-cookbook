@@ -12,6 +12,7 @@ import org.anderes.edu.hexagonal.cookbook.mediation.CookbookException;
 import org.anderes.edu.hexagonal.cookbook.mediation.UserInterfaceRecipeService;
 import org.anderes.edu.hexagonal.cookbook.port.RepositoryPort;
 import org.anderes.edu.hexagonal.cookbook.port.UserInterfacePort;
+import org.apache.commons.lang3.Validate;
 
 public class UserInterfaceRecipeServiceImpl implements UserInterfaceRecipeService {
 
@@ -26,6 +27,8 @@ public class UserInterfaceRecipeServiceImpl implements UserInterfaceRecipeServic
 
     @Override
     public void getRecipeById(String id, final UserInterfacePort userInterfacePort) {
+        Validate.notNull(userInterfacePort);
+        Validate.notBlank(id);
         final RepositoryPort repositoryPort = MasterControlProgram.getInstance().getRepositoryPort();
         final RecipeDomainObject recipe = repositoryService.findRecipeById(id, repositoryPort);
         userInterfacePort.showRecipe(recipe);
@@ -33,6 +36,7 @@ public class UserInterfaceRecipeServiceImpl implements UserInterfaceRecipeServic
     
     @Override
     public void setRecipe(final RecipeDomainObject recipe) {
+        Validate.notNull(recipe);
         final Set<ConstraintViolation<RecipeDomainObject>> constraints = validatorService.validate(recipe);
         if (!constraints.isEmpty()) {
             throw new CookbookException(new ConstraintViolationException(constraints));
@@ -43,6 +47,7 @@ public class UserInterfaceRecipeServiceImpl implements UserInterfaceRecipeServic
 
     @Override
     public void addRecipe(final RecipeDomainObject recipe) {
+        Validate.notNull(recipe);
         final Set<ConstraintViolation<RecipeDomainObject>> constraints = validatorService.validate(recipe);
         if (!constraints.isEmpty()) {
             throw new CookbookException(new ConstraintViolationException(constraints));
@@ -53,9 +58,19 @@ public class UserInterfaceRecipeServiceImpl implements UserInterfaceRecipeServic
 
     @Override
     public void getRecipeOverview(final UserInterfacePort userInterfacePort) {
+        Validate.notNull(userInterfacePort);
         final RepositoryPort repositoryPort = MasterControlProgram.getInstance().getRepositoryPort();
         final Map<String, String> values = repositoryService.getRecipeOverview(repositoryPort);
         userInterfacePort.showRecipeOverview(values);
+    }
+
+    @Override
+    public void getRecipesByTags(final Set<String> tags, final UserInterfacePort userInterfacePort) {
+        Validate.notNull(userInterfacePort);
+        Validate.isTrue(!Validate.notNull(tags).isEmpty());
+        final RepositoryPort repositoryPort = MasterControlProgram.getInstance().getRepositoryPort();
+        final Set<RecipeDomainObject> recipes = repositoryService.findRecipesByTags(tags, repositoryPort);
+        userInterfacePort.showRecipes(recipes);
     }
 
 }

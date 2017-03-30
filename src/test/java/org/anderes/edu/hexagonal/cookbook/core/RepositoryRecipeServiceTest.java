@@ -1,13 +1,17 @@
 package org.anderes.edu.hexagonal.cookbook.core;
 
 import static java.time.Month.MARCH;
-import static org.anderes.edu.hexagonal.cookbook.core.RecipeBuilder.createRecipe;
+import static org.anderes.edu.hexagonal.cookbook.core.RecipeBuilder.*;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -30,6 +34,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import java.util.stream.Collectors;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { CookbookConfig.class })
@@ -80,7 +85,8 @@ public class RepositoryRecipeServiceTest {
     public void shouldBeFindNotValidRecipe() {
         // given
         final RecipeDomainObject recipe = createNotValidRecipe();
-        when(repositoryPort.findRecipeById("12345678-1234-1234-4321-123456789abc")).thenReturn(Optional.of(SerializationUtils.clone(recipe)));
+        when(repositoryPort.findRecipeById("12345678-1234-1234-4321-123456789abc"))
+                            .thenReturn(Optional.of(SerializationUtils.clone(recipe)));
         exception.expect(CookbookException.class);
         exception.expectMessage("constraint violation exception");
         
@@ -152,6 +158,59 @@ public class RepositoryRecipeServiceTest {
         
         // verify
         verify(repositoryPort, times(1)).findRecipeById(recipe.getId());
+        verify(repositoryPort).getVersion();
+        verifyNoMoreInteractions(repositoryPort);
+    }
+    
+    @Test
+    public void shouldBeRemoveRecipe() {
+        // given
+        final RecipeDomainObject recipe = createRecipe();
+        when(repositoryPort.findRecipeById(recipe.getId())).thenReturn(Optional.of(SerializationUtils.clone(recipe)));
+        
+        // when
+        repositoryService.removeRecipe(recipe, repositoryPort);
+        
+        // then
+        verify(repositoryPort, times(1)).findRecipeById(recipe.getId());
+        verify(repositoryPort, times(1)).removeRecipe(recipe);
+        verify(repositoryPort).getVersion();
+        verifyNoMoreInteractions(repositoryPort);
+    }
+    
+    @Test
+    public void shouldBeRecipeCollectionByTag() {
+        // given
+        final Set<String> tags = Stream.of("vegetarisch", "indisch").collect(Collectors.toSet());
+        final Set<RecipeDomainObject> recipeSet = createRandomRecipeSet(2);
+        when(repositoryService.findRecipesByTags(tags, repositoryPort)).thenReturn(recipeSet);
+        
+        // when
+        final Set<RecipeDomainObject> recipes = repositoryService.findRecipesByTags(tags , repositoryPort);
+        
+        // then
+        assertThat(recipes, is(not(nullValue())));
+        assertThat(recipes.size(), is(2));
+        verify(repositoryPort, times(1)).findRecipesByTags(tags);
+        verify(repositoryPort).getVersion();
+        verifyNoMoreInteractions(repositoryPort);
+    }
+    
+    @Test
+    public void shouldBeNotValidRecipeCollectionByTag() {
+        // given
+        final Set<String> tags = Stream.of("vegetarisch", "indisch").collect(Collectors.toSet());
+        final Set<RecipeDomainObject> recipeSet = createRandomRecipeSet(2);
+        recipeSet.add(createNotValidRecipe());
+        when(repositoryService.findRecipesByTags(tags, repositoryPort)).thenReturn(recipeSet);
+        exception.expect(CookbookException.class);
+        exception.expectMessage("constraint violation exception");
+        
+        // when
+        repositoryService.findRecipesByTags(tags , repositoryPort);
+        
+        // then
+        verify(repositoryPort, times(1)).findRecipesByTags(tags);
         verify(repositoryPort).getVersion();
         verifyNoMoreInteractions(repositoryPort);
     }

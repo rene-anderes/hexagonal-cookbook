@@ -1,5 +1,7 @@
 package org.anderes.edu.hexagonal.cookbook.mediation;
 
+import java.util.Set;
+
 import org.anderes.edu.hexagonal.cookbook.domain.RecipeDomainObject;
 import org.anderes.edu.hexagonal.cookbook.port.UserInterfacePort;
 
@@ -48,5 +50,15 @@ public interface UserInterfaceRecipeService {
      * @see UserInterfacePort#showRecipeOverview(java.util.Map)
      */
     void getRecipeOverview(final UserInterfacePort userInterfacePort);
+
+    /**
+     * Anfrage von Rezepten die alle einer der übergebenen Tags beinhalten
+     * 
+     * @param tags
+     *            Ein oder meherer Tags
+     * @param userInterfacePort
+     *            UI-Port
+     */
+    void getRecipesByTags(Set<String> tags, UserInterfacePort userInterfacePort);
 
 }
