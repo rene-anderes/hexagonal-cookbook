@@ -73,4 +73,15 @@ public class UserInterfaceRecipeServiceImpl implements UserInterfaceRecipeServic
         userInterfacePort.showRecipes(recipes);
     }
 
+    @Override
+    public void bulkAddRecipe(RecipeDomainObject recipe) {
+        Validate.notNull(recipe);
+        final Set<ConstraintViolation<RecipeDomainObject>> constraints = validatorService.validate(recipe);
+        if (!constraints.isEmpty()) {
+            throw new CookbookException(new ConstraintViolationException(constraints));
+        }
+        final RepositoryPort repositoryPort = MasterControlProgram.getInstance().getRepositoryPort();
+        repositoryService.bulkAddRecipe(recipe, repositoryPort);
+    }
+
 }

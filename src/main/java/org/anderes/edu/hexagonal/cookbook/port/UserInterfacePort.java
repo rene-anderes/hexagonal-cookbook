@@ -23,7 +23,7 @@ public interface UserInterfacePort {
     void showRecipeOverview(Map<String, String> overview);
 
     /**
-     * Wird aufgerufen um eine Liste con Rezepten anzuzeigen.
+     * Wird aufgerufen um eine Liste von Rezepten anzuzeigen.
      * 
      * @param recipeSet
      *            Liste mit Rezepten

@@ -1,5 +1,6 @@
 package org.anderes.edu.hexagonal.cookbook.core;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -44,6 +45,7 @@ public class RepositoryRecipeService {
             logger.warn("Update can not be performed because the record does not exist!"); 
             throw new CookbookException(ILLEGAL_STATE);
         }
+        recipe.setEditingDate(LocalDateTime.now());
         repositoryPort.updateRecipe(recipe);
     }
 
@@ -53,9 +55,20 @@ public class RepositoryRecipeService {
             logger.warn("The dataset can not be added because it already exists");
             throw new CookbookException(ILLEGAL_STATE);
         }
+        recipe.setAddingDate(LocalDateTime.now());
+        recipe.setEditingDate(LocalDateTime.now());
         repositoryPort.addNewRecipe(recipe);
     }
-
+    
+    public void bulkAddRecipe(final RecipeDomainObject recipe, final RepositoryPort repositoryPort) {
+        final Optional<RecipeDomainObject> findRecipe = repositoryPort.findRecipeById(recipe.getId());
+        if (findRecipe.isPresent()) {
+            logger.warn("The dataset can not be added because it already exists");
+            throw new CookbookException(ILLEGAL_STATE);
+        }
+        repositoryPort.addNewRecipe(recipe);
+    }
+    
     public Map<String, String> getRecipeOverview(final RepositoryPort repositoryPort) {
         return repositoryPort.getRecipeOverview();
     }
@@ -76,5 +89,4 @@ public class RepositoryRecipeService {
         }
         return recipes;
     }
-
 }

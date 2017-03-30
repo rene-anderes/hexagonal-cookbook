@@ -18,6 +18,7 @@ public interface RepositoryPort {
 
     Map<String, String> getRecipeOverview();
 
+    /** Version / Art des RepositoryAdapters */
     String getVersion();
 
     Set<RecipeDomainObject> findRecipesByTags(Set<String> tags);

@@ -46,7 +46,7 @@ public class RecipeDomainObject implements Serializable {
     private Set<IngredientDomainObject> ingredients = new HashSet<>();
     private Set<String> tags = new HashSet<String>();
     @Valid
-    private NutritiveValueDomanObject nutritiveValue;
+    private NutritiveValueDomanObject nutritiveValueObject;
     @Size(min = 5, max = 5000)
     private String hint;
     @NotNull @Min(0) @Max(480)
@@ -72,6 +72,7 @@ public class RecipeDomainObject implements Serializable {
     }
 
     public RecipeDomainObject setAddingDate(LocalDateTime addingDate) {
+        Validate.notNull(addingDate);
         this.addingDate = addingDate;
         return this;
     }
@@ -84,11 +85,13 @@ public class RecipeDomainObject implements Serializable {
     }
 
     public RecipeDomainObject setRating(Integer rating) {
+        Validate.notNull(rating);
         this.rating = rating;
         return this;
     }
 
     public RecipeDomainObject setEditingDate(LocalDateTime editingDate) {
+        Validate.notNull(editingDate);
         this.editingDate = editingDate;
         return this;
     }
@@ -114,6 +117,7 @@ public class RecipeDomainObject implements Serializable {
     }
 
     public RecipeDomainObject setId(String id) {
+        Validate.notNull(id);
         this.id = id;
         return this;
     }
@@ -123,16 +127,19 @@ public class RecipeDomainObject implements Serializable {
     }
 
     public RecipeDomainObject setTitle(String title) {
+        Validate.notNull(title);
         this.title = title;
         return this;
     }
 
     public RecipeDomainObject addIngredient(final IngredientDomainObject ingredient) {
+        Validate.notNull(ingredient);
         ingredients.add(ingredient);
         return this;
     }
     
     public void removeIngredient(final IngredientDomainObject ingredient) {
+        Validate.notNull(ingredient);
         ingredients.remove(ingredient);
     }
 
@@ -145,6 +152,7 @@ public class RecipeDomainObject implements Serializable {
     }
 
     public RecipeDomainObject setPreparation(final String preparation) {
+        Validate.notNull(preparation);
         this.preparation = preparation;
         return this;
     }
@@ -154,6 +162,7 @@ public class RecipeDomainObject implements Serializable {
     }
 
     public RecipeDomainObject setPreamble(final String preamble) {
+        Validate.notNull(preamble);
         this.preamble = preamble;
         return this;
     }
@@ -163,6 +172,7 @@ public class RecipeDomainObject implements Serializable {
     }
 
     public RecipeDomainObject setNoOfPeople(final String noOfPeople) {
+        Validate.notNull(noOfPeople);
         this.noOfPeople = noOfPeople;
         return this;
     }
@@ -182,21 +192,23 @@ public class RecipeDomainObject implements Serializable {
         return this;
     }
 
-    public Optional<NutritiveValueDomanObject> getNutritiveValueIfExists() {
-        return Optional.ofNullable(nutritiveValue);
+    public Optional<NutritiveValueDomanObject> getNutritiveValue() {
+        return Optional.ofNullable(nutritiveValueObject);
     }
     
     public RecipeDomainObject setNutritiveValue(NutritiveValueDomanObject nutritiveValue) {
-        this.nutritiveValue = nutritiveValue;
+        Validate.notNull(nutritiveValue);
+        this.nutritiveValueObject = nutritiveValue;
         return this;
     }
     
     public RecipeDomainObject removeNutritiveValue() {
-        this.nutritiveValue = null;
+        this.nutritiveValueObject = null;
         return this;
     }
 
     public RecipeDomainObject setHint(String hint) {
+        Validate.notNull(hint);
         this.hint = hint;
         return this;
     }
@@ -213,11 +225,12 @@ public class RecipeDomainObject implements Serializable {
     }
 
     public RecipeDomainObject setSetupTime(Integer setupTime) {
+        Validate.notNull(setupTime);
         this.setupTime = setupTime;
         return this;
     }
 
-    public Optional<Integer>  getCookingTime() {
+    public Optional<Integer> getCookingTime() {
         if (cookingTime == 0) {
             return Optional.empty();
         }
@@ -225,6 +238,7 @@ public class RecipeDomainObject implements Serializable {
     }
 
     public RecipeDomainObject setCookingTime(Integer cookingTime) {
+        Validate.notNull(cookingTime);
         this.cookingTime = cookingTime;
         return this;
     }
@@ -235,7 +249,7 @@ public class RecipeDomainObject implements Serializable {
         return new HashCodeBuilder(17, 37).append(id).append(title).append(preparation)
                         .append(preamble).append(noOfPeople).append(editingDate)
                         .append(addingDate).append(rating).append(images)
-                        .append(ingredients).append(tags).append(nutritiveValue)
+                        .append(ingredients).append(tags).append(nutritiveValueObject)
                         .append(hint).append(setupTime).append(cookingTime)
                         .toHashCode();
     }
@@ -256,7 +270,7 @@ public class RecipeDomainObject implements Serializable {
                         .append(preamble, rhs.preamble).append(noOfPeople, rhs.noOfPeople).append(editingDate, rhs.editingDate)
                         .append(addingDate, rhs.addingDate).append(rating, rhs.rating).append(images, rhs.images)
                         .append(ingredients, rhs.ingredients).append(tags, rhs.tags)
-                        .append(nutritiveValue, rhs.nutritiveValue)
+                        .append(nutritiveValueObject, rhs.nutritiveValueObject)
                         .append(hint, rhs.hint).append(setupTime, rhs.setupTime).append(cookingTime, rhs.cookingTime)
                         .isEquals();
     }

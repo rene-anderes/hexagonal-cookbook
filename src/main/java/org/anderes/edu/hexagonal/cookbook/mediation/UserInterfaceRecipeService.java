@@ -61,4 +61,13 @@ public interface UserInterfaceRecipeService {
      */
     void getRecipesByTags(Set<String> tags, UserInterfacePort userInterfacePort);
 
+    /**
+     * Diese Methode dient zum Import von bestehenden Daten, die nicht verändert
+     * werden sollen, z.B. 'adding date' oder 'editing date'.
+     * 
+     * @param recipe
+     *            Neues Rezept
+     */
+    void bulkAddRecipe(RecipeDomainObject recipe);
+
 }

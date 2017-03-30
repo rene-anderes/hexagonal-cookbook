@@ -107,6 +107,8 @@ public class RepositoryRecipeServiceTest {
         repositoryService.updateRecipe(recipe, repositoryPort);
         
         // verify
+        assertThat(recipe.getAddingDate(), is(LocalDateTime.of(2017, MARCH, 27, 16, 00)));
+        assertThat(LocalDateTime.now().minusSeconds(2).isBefore(recipe.getEditingDate()), is(true));
         verify(repositoryPort, times(1)).findRecipeById(recipe.getId());
         verify(repositoryPort, times(1)).updateRecipe(recipe);
         verify(repositoryPort).getVersion();
@@ -122,11 +124,6 @@ public class RepositoryRecipeServiceTest {
         
         // when
         repositoryService.updateRecipe(recipe, repositoryPort);
-        
-        // verify
-        verify(repositoryPort, times(1)).findRecipeById(recipe.getId());
-        verify(repositoryPort).getVersion();
-        verifyNoMoreInteractions(repositoryPort);
     }
     
     @Test
@@ -139,6 +136,26 @@ public class RepositoryRecipeServiceTest {
         repositoryService.addNewRecipe(recipe, repositoryPort);
         
         // verify
+        assertThat(LocalDateTime.now().minusSeconds(2).isBefore(recipe.getAddingDate()), is(true));
+        assertThat(LocalDateTime.now().minusSeconds(2).isBefore(recipe.getEditingDate()), is(true));
+        verify(repositoryPort, times(1)).findRecipeById(recipe.getId());
+        verify(repositoryPort, times(1)).addNewRecipe(recipe);
+        verify(repositoryPort).getVersion();
+        verifyNoMoreInteractions(repositoryPort);
+    }
+    
+    @Test
+    public void shouldBeBulkAddRecipe() {
+        // given
+        final RecipeDomainObject recipe = createRecipe();
+        when(repositoryPort.findRecipeById(recipe.getId())).thenReturn(Optional.empty());
+        
+        // when
+        repositoryService.bulkAddRecipe(recipe, repositoryPort);
+        
+        // verify
+        assertThat(recipe.getAddingDate().isEqual(LocalDateTime.of(2017, MARCH, 27, 16, 00)), is(true));
+        assertThat(recipe.getEditingDate().isEqual(LocalDateTime.of(2017, MARCH, 27, 16, 32)), is(true));
         verify(repositoryPort, times(1)).findRecipeById(recipe.getId());
         verify(repositoryPort, times(1)).addNewRecipe(recipe);
         verify(repositoryPort).getVersion();
@@ -155,11 +172,6 @@ public class RepositoryRecipeServiceTest {
         
         // when
         repositoryService.addNewRecipe(recipe, repositoryPort);
-        
-        // verify
-        verify(repositoryPort, times(1)).findRecipeById(recipe.getId());
-        verify(repositoryPort).getVersion();
-        verifyNoMoreInteractions(repositoryPort);
     }
     
     @Test
@@ -208,11 +220,6 @@ public class RepositoryRecipeServiceTest {
         
         // when
         repositoryService.findRecipesByTags(tags , repositoryPort);
-        
-        // then
-        verify(repositoryPort, times(1)).findRecipesByTags(tags);
-        verify(repositoryPort).getVersion();
-        verifyNoMoreInteractions(repositoryPort);
     }
     
     private RecipeDomainObject createNotValidRecipe() {

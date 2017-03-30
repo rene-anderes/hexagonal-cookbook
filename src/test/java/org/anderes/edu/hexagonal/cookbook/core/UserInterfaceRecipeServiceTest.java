@@ -2,6 +2,8 @@ package org.anderes.edu.hexagonal.cookbook.core;
 
 import static java.time.Month.MARCH;
 import static org.anderes.edu.hexagonal.cookbook.core.RecipeBuilder.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
 
@@ -116,6 +118,25 @@ public class UserInterfaceRecipeServiceTest {
         userInterfaceService.addRecipe(recipe);
         
         // then
+        verifyZeroInteractions(userInterfacePort);
+        verify(repositoryPort).findRecipeById(recipe.getId());
+        verify(repositoryPort).addNewRecipe(recipe);
+        verify(repositoryPort).getVersion();
+        verifyNoMoreInteractions(repositoryPort);
+    }
+    
+    @Test
+    public void shouldBeBulkAddRecipe() {
+        //given
+        final RecipeDomainObject recipe = createRecipe();
+        when(repositoryPort.findRecipeById(recipe.getId())).thenReturn(Optional.empty());
+        
+        // when
+        userInterfaceService.bulkAddRecipe(recipe);
+        
+        // then
+        assertThat(recipe.getAddingDate().isEqual(LocalDateTime.of(2017, MARCH, 27, 16, 00)), is(true));
+        assertThat(recipe.getEditingDate().isEqual(LocalDateTime.of(2017, MARCH, 27, 16, 32)), is(true));
         verifyZeroInteractions(userInterfacePort);
         verify(repositoryPort).findRecipeById(recipe.getId());
         verify(repositoryPort).addNewRecipe(recipe);
