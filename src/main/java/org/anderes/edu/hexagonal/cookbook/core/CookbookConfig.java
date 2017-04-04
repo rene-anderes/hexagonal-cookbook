@@ -9,7 +9,7 @@ public class CookbookConfig {
 
     @Bean
     /*package*/ RepositoryRecipeService getRepositoryService() {
-        return new RepositoryRecipeService(getValidatorServeice());
+        return new RepositoryRecipeService(getValidatorServeice(), getNotificationService());
     }
     
     @Bean
@@ -20,5 +20,10 @@ public class CookbookConfig {
     @Bean
     /*package*/ UserInterfaceRecipeService getUserInterfaceRecipeService() {
         return new UserInterfaceRecipeServiceImpl(getRepositoryService(), getValidatorServeice());
+    }
+    
+    @Bean
+    /*package*/ NotificationService getNotificationService() {
+        return new NotificationService();
     }
 }

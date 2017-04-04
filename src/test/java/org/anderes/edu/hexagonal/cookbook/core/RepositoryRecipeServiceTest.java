@@ -22,6 +22,7 @@ import org.anderes.edu.hexagonal.cookbook.domain.IngredientDomainObject;
 import org.anderes.edu.hexagonal.cookbook.domain.NutritiveValueDomanObject;
 import org.anderes.edu.hexagonal.cookbook.domain.RecipeDomainObject;
 import org.anderes.edu.hexagonal.cookbook.mediation.CookbookException;
+import org.anderes.edu.hexagonal.cookbook.port.NotificationPort;
 import org.anderes.edu.hexagonal.cookbook.port.RepositoryPort;
 import org.apache.commons.lang3.SerializationUtils;
 
@@ -44,6 +45,8 @@ public class RepositoryRecipeServiceTest {
     private RepositoryRecipeService repositoryService;
     @Mock
     private RepositoryPort repositoryPort;
+    @Mock
+    private NotificationPort notificationPort;
     @Rule
     public ExpectedException exception = ExpectedException.none();
     
@@ -52,6 +55,7 @@ public class RepositoryRecipeServiceTest {
         MockitoAnnotations.initMocks(this);
         when(repositoryPort.getVersion()).thenReturn("Mock-Object for Testing");
         MasterControlProgram.getInstance().registerRepositoryPort(repositoryPort);
+        MasterControlProgram.getInstance().registerNotificationPort(notificationPort);
     }
     
     @Test
@@ -65,6 +69,10 @@ public class RepositoryRecipeServiceTest {
         
         // then
         assertThat(findRecipe.equals(recipe), is(true));
+        verify(repositoryPort, times(1)).findRecipeById(recipe.getId());
+        verify(repositoryPort).getVersion();
+        verifyNoMoreInteractions(repositoryPort);
+        verifyZeroInteractions(notificationPort);
     }
     
     @Test
@@ -79,6 +87,7 @@ public class RepositoryRecipeServiceTest {
         verify(repositoryPort, times(1)).findRecipeById("Wrong-ID");
         verify(repositoryPort).getVersion();
         verifyNoMoreInteractions(repositoryPort);
+        verifyZeroInteractions(notificationPort);
     }
     
     @Test
@@ -95,6 +104,7 @@ public class RepositoryRecipeServiceTest {
         verify(repositoryPort, times(1)).findRecipeById("12345678-1234-1234-4321-123456789abc");
         verify(repositoryPort).getVersion();
         verifyNoMoreInteractions(repositoryPort);
+        verifyZeroInteractions(notificationPort);
     }
     
     @Test
@@ -113,6 +123,8 @@ public class RepositoryRecipeServiceTest {
         verify(repositoryPort, times(1)).updateRecipe(recipe);
         verify(repositoryPort).getVersion();
         verifyNoMoreInteractions(repositoryPort);
+        verify(notificationPort, times(1)).eventUpdateRecipe(recipe);
+        verifyNoMoreInteractions(notificationPort);
     }
     
     @Test
@@ -142,6 +154,8 @@ public class RepositoryRecipeServiceTest {
         verify(repositoryPort, times(1)).addNewRecipe(recipe);
         verify(repositoryPort).getVersion();
         verifyNoMoreInteractions(repositoryPort);
+        verify(notificationPort, times(1)).eventAddNewRecipe(recipe);
+        verifyNoMoreInteractions(notificationPort);
     }
     
     @Test
@@ -160,6 +174,8 @@ public class RepositoryRecipeServiceTest {
         verify(repositoryPort, times(1)).addNewRecipe(recipe);
         verify(repositoryPort).getVersion();
         verifyNoMoreInteractions(repositoryPort);
+        verify(notificationPort, times(1)).eventAddNewRecipe(recipe);
+        verifyNoMoreInteractions(notificationPort);
     }
     
     @Test
@@ -188,6 +204,8 @@ public class RepositoryRecipeServiceTest {
         verify(repositoryPort, times(1)).removeRecipe(recipe);
         verify(repositoryPort).getVersion();
         verifyNoMoreInteractions(repositoryPort);
+        verify(notificationPort, times(1)).eventRemoveRecipe(recipe);
+        verifyNoMoreInteractions(notificationPort);
     }
     
     @Test

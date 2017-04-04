@@ -1,7 +1,12 @@
 package org.anderes.edu.hexagonal.cookbook.core;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.anderes.edu.hexagonal.cookbook.core.CookbookConfig;
 import org.anderes.edu.hexagonal.cookbook.mediation.UserInterfaceRecipeService;
+import org.anderes.edu.hexagonal.cookbook.port.NotificationPort;
 import org.anderes.edu.hexagonal.cookbook.port.RepositoryPort;
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
@@ -14,6 +19,7 @@ public class MasterControlProgram {
     private static MasterControlProgram instance;
     private RepositoryPort repositoryPort;
     private final AnnotationConfigApplicationContext ctx;
+    private Set<NotificationPort> notificationPorts = new HashSet<>();
 
     public MasterControlProgram() {
         super();
@@ -30,10 +36,10 @@ public class MasterControlProgram {
         return instance;
     }
     
-    public void registerRepositoryPort(final RepositoryPort port) {
-        Validate.notNull(port);
-        this.repositoryPort = port;
-        logger.info("Register new RepositoryPort: " + port.getVersion());
+    public void registerRepositoryPort(final RepositoryPort repositoryPort) {
+        Validate.notNull(repositoryPort);
+        this.repositoryPort = repositoryPort;
+        logger.info("Register new RepositoryPort: " + repositoryPort.getVersion());
     }
     
     RepositoryPort getRepositoryPort() {
@@ -49,5 +55,19 @@ public class MasterControlProgram {
     protected void finalize() throws Throwable {
         super.finalize();
         ctx.close();
+    }
+
+    public void registerNotificationPort(NotificationPort notificationPort) {
+        Validate.notNull(notificationPort);
+        notificationPorts.add(notificationPort);
+    }
+    
+    public void unregisterNotificationPort(NotificationPort notificationPort) {
+        Validate.notNull(notificationPort);
+        notificationPorts.remove(notificationPort);
+    }
+
+    public Set<NotificationPort> getNotificationPorts() {
+        return Collections.unmodifiableSet(notificationPorts);
     }
 }

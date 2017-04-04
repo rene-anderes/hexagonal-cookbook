@@ -21,11 +21,13 @@ public class RepositoryRecipeService {
 
     private final Logger logger = LogManager.getLogger(this.getClass().getName());
     private ValidatorService validatorService;
+    private NotificationService notificationService;
     
     @Inject
-    public RepositoryRecipeService(ValidatorService validatorService) {
+    public RepositoryRecipeService(ValidatorService validatorService, NotificationService notificationService) {
         super();
         this.validatorService = validatorService;
+        this.notificationService = notificationService;
     }
 
     public RecipeDomainObject findRecipeById(String id, final RepositoryPort repositoryPort) {
@@ -47,6 +49,7 @@ public class RepositoryRecipeService {
         }
         recipe.setEditingDate(LocalDateTime.now());
         repositoryPort.updateRecipe(recipe);
+        notificationService.eventUpdateRecipe(recipe);
     }
 
     public void addNewRecipe(final RecipeDomainObject recipe, final RepositoryPort repositoryPort) {
@@ -58,6 +61,7 @@ public class RepositoryRecipeService {
         recipe.setAddingDate(LocalDateTime.now());
         recipe.setEditingDate(LocalDateTime.now());
         repositoryPort.addNewRecipe(recipe);
+        notificationService.eventNewRecipe(recipe);
     }
     
     public void bulkAddRecipe(final RecipeDomainObject recipe, final RepositoryPort repositoryPort) {
@@ -67,6 +71,7 @@ public class RepositoryRecipeService {
             throw new CookbookException(ILLEGAL_STATE);
         }
         repositoryPort.addNewRecipe(recipe);
+        notificationService.eventNewRecipe(recipe);
     }
     
     public Map<String, String> getRecipeOverview(final RepositoryPort repositoryPort) {
@@ -77,6 +82,7 @@ public class RepositoryRecipeService {
         final Optional<RecipeDomainObject> findRecipe = repositoryPort.findRecipeById(recipe.getId());
         if (findRecipe.isPresent()) {
             repositoryPort.removeRecipe(recipe);
+            notificationService.eventRemoveRecipe(recipe);
         }
     }
 
