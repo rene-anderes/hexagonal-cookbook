@@ -1,23 +1,27 @@
 package org.anderes.edu.hexagonal.cookbook.core;
 
 import static java.time.Month.MARCH;
-import static org.anderes.edu.hexagonal.cookbook.core.RecipeBuilder.*;
+import static org.anderes.edu.hexagonal.cookbook.core.RecipeBuilder.createRandomRecipeSet;
+import static org.anderes.edu.hexagonal.cookbook.core.RecipeBuilder.createRecipe;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+import org.mockito.Mock;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
-import org.anderes.edu.hexagonal.cookbook.core.CookbookConfig;
-import org.anderes.edu.hexagonal.cookbook.core.MasterControlProgram;
-import org.anderes.edu.hexagonal.cookbook.core.RepositoryRecipeService;
 import org.anderes.edu.hexagonal.cookbook.domain.IngredientDomainObject;
 import org.anderes.edu.hexagonal.cookbook.domain.NutritiveValueDomanObject;
 import org.anderes.edu.hexagonal.cookbook.domain.RecipeDomainObject;
@@ -25,30 +29,25 @@ import org.anderes.edu.hexagonal.cookbook.mediation.CookbookException;
 import org.anderes.edu.hexagonal.cookbook.port.NotificationPort;
 import org.anderes.edu.hexagonal.cookbook.port.RepositoryPort;
 import org.apache.commons.lang3.SerializationUtils;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import java.util.stream.Collectors;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { CookbookConfig.class })
 public class RepositoryRecipeServiceTest {
 
-    @Inject
-    private RepositoryRecipeService repositoryService;
-    @Mock
-    private RepositoryPort repositoryPort;
-    @Mock
-    private NotificationPort notificationPort;
     @Rule
     public ExpectedException exception = ExpectedException.none();
+    @Inject
+    private RepositoryRecipeService repositoryService;
+    @Mock private RepositoryPort repositoryPort;
+    @Mock private NotificationPort notificationPort;
     
     @Before
     public void setup() {
