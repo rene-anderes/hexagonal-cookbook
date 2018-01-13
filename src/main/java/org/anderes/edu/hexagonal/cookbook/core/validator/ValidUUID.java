@@ -7,15 +7,18 @@ import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
+import javax.validation.ReportAsSingleViolation;
+import javax.validation.constraints.Pattern;
 
-@Constraint(validatedBy = { RecipeDomainObjectValidator.class })
-@Target({ ElementType.TYPE })
+@Constraint(validatedBy = {})
+@Pattern(regexp = "[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}")
+@ReportAsSingleViolation
+@Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidRecipeDomainObject {
-    String message() default "{ch.edu.validation.recipe}";
+public @interface ValidUUID {
 
+    String message() default "{org.anderes.validation.uuid}";
     Class<?>[] groups() default {};
-
     Class<? extends Payload>[] payload() default {};
 
 }

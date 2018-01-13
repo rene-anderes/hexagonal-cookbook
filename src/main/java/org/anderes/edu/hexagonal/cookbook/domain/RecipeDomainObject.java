@@ -12,9 +12,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.anderes.edu.hexagonal.cookbook.core.validator.ValidUUID;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -26,7 +26,7 @@ public class RecipeDomainObject implements Serializable {
     /* Klassenvariablen nicht Optional, da Bean Validation 1.x nicht mit Optional umgehen kann */
 
     private static final long serialVersionUID = 1L;
-    @NotNull @Size(min = 36, max = 36) @Pattern(regexp = "[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}")
+    @NotNull @ValidUUID
     private String id = UUID.randomUUID().toString();
     @NotNull @Size(min = 5, max = 255)
     private String title;
@@ -40,10 +40,11 @@ public class RecipeDomainObject implements Serializable {
     private LocalDateTime addingDate = LocalDateTime.now();
     @NotNull @Min(1) @Max(5)
     private Integer rating = Integer.valueOf(0);
-    @Valid
+    @NotNull @Valid
     private Set<ImageDomainObject> images = new HashSet<>();
-    @Valid @Size(min = 1)
+    @NotNull @Valid @Size(min = 1)
     private Set<IngredientDomainObject> ingredients = new HashSet<>();
+    @NotNull
     private Set<String> tags = new HashSet<String>();
     @Valid
     private NutritiveValueDomanObject nutritiveValueObject;
@@ -138,9 +139,10 @@ public class RecipeDomainObject implements Serializable {
         return this;
     }
     
-    public void removeIngredient(final IngredientDomainObject ingredient) {
+    public RecipeDomainObject removeIngredient(final IngredientDomainObject ingredient) {
         Validate.notNull(ingredient);
         ingredients.remove(ingredient);
+        return this;
     }
 
     public Set<IngredientDomainObject> getIngredients() {
@@ -164,6 +166,11 @@ public class RecipeDomainObject implements Serializable {
     public RecipeDomainObject setPreamble(final String preamble) {
         Validate.notNull(preamble);
         this.preamble = preamble;
+        return this;
+    }
+    
+    public RecipeDomainObject removePreamble() {
+        preamble = null;
         return this;
     }
 

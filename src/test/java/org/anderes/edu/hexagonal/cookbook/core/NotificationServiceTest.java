@@ -1,5 +1,10 @@
 package org.anderes.edu.hexagonal.cookbook.core;
 
+import static org.anderes.edu.hexagonal.cookbook.core.RecipeBuilder.createRecipe;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+
 import javax.inject.Inject;
 
 import org.anderes.edu.hexagonal.cookbook.domain.RecipeDomainObject;
@@ -11,15 +16,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import static org.anderes.edu.hexagonal.cookbook.core.RecipeBuilder.*;
-import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { CookbookConfig.class })
 public class NotificationServiceTest {
 
-    @Mock
-    private NotificationPort notificationPort;
+    @Mock private NotificationPort notificationPort;
     @Inject
     private NotificationService notificationService;
     

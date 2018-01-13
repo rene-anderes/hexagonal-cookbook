@@ -54,21 +54,14 @@ public class ValidatorServiceTest {
         // when
         final Set<ConstraintViolation<RecipeDomainObject>> constraints = validator.validate(recipe);
         // then
-        assertThat(constraints.size(), is(4));
+        assertThat(constraints.size(), is(3));
         Optional<ConstraintViolation<RecipeDomainObject>> find1 = 
                         constraints.stream()
                             .filter(c -> c.getPropertyPath().toString().equals("id"))
                             .filter(c -> c.getInvalidValue().equals("falsche-ID"))
-                            .filter(c -> c.getMessageTemplate().equals("{javax.validation.constraints.Pattern.message}"))
+                            .filter(c -> c.getMessageTemplate().equals("{org.anderes.validation.uuid}"))
                             .findAny();
         assertThat(find1.isPresent(), is(true));
-        Optional<ConstraintViolation<RecipeDomainObject>> find2 = 
-                        constraints.stream()
-                            .filter(c -> c.getPropertyPath().toString().equals("id"))
-                            .filter(c -> c.getInvalidValue().equals("falsche-ID"))
-                            .filter(c -> c.getMessageTemplate().equals("{javax.validation.constraints.Size.message}"))
-                            .findAny();
-        assertThat(find2.isPresent(), is(true));
         Optional<ConstraintViolation<RecipeDomainObject>> find3 = 
                         constraints.stream()
                             .filter(c -> c.getPropertyPath().toString().equals("noOfPeople"))

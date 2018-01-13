@@ -2,10 +2,13 @@ package org.anderes.edu.hexagonal.cookbook.domain;
 
 import java.io.Serializable;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.anderes.edu.hexagonal.cookbook.core.validator.ValidUUID;
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -17,25 +20,38 @@ public class ImageDomainObject implements Serializable {
     /* Klassenvariablen nicht Optional, da Bean Validation 1.x nicht mit Optional umgehen kann */
     
     private static final long serialVersionUID = 1L;
+    @NotNull @ValidUUID
+    private String id = UUID.randomUUID().toString();
     @NotNull
     @Size(min = 5, max = 255)
     private String url;
     @Size(min = 1, max = 255)
     private String description;
 
-    @SuppressWarnings("unused")
     private ImageDomainObject() {
         super();
+    }
+    
+    public ImageDomainObject(String url) {
+        this();
+        Validate.notNull(url);
+        this.url = url;
     }
 
     public ImageDomainObject(String url, String description) {
         this(url);
+        Validate.notNull(description);
         this.description = description;
     }
     
-    public ImageDomainObject(String url) {
-        super();
-        this.url = url;
+    public ImageDomainObject(String id, String url, String description) {
+        this(url, description);
+        Validate.notNull(id);
+        this.id = id;
+    }
+    
+    public String getId() {
+        return id;
     }
 
     public String getUrl() {
@@ -48,12 +64,12 @@ public class ImageDomainObject implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Image: [url='%s'], [description='%s']", url, description);
+        return String.format("Image: [id='%s'], [url='%s'], [description='%s']", id, url, description);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(url).append(description).toHashCode();
+        return new HashCodeBuilder(17, 37).append(id).append(url).append(description).toHashCode();
 
     }
 
@@ -69,6 +85,6 @@ public class ImageDomainObject implements Serializable {
             return false;
         }
         ImageDomainObject rhs = (ImageDomainObject) obj;
-        return new EqualsBuilder().append(url, rhs.url).append(description, rhs.description).isEquals();
+        return new EqualsBuilder().append(id, rhs.id).append(url, rhs.url).append(description, rhs.description).isEquals();
     }
 }

@@ -2,14 +2,16 @@ package org.anderes.edu.hexagonal.cookbook.domain;
 
 import java.io.Serializable;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.anderes.edu.hexagonal.cookbook.core.validator.ValidUUID;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.text.StrBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Zutat
@@ -19,6 +21,8 @@ public class IngredientDomainObject implements Serializable {
     /* Klassenvariablen nicht Optional, da Bean Validation 1.x nicht mit Optional umgehen kann */
     
     private static final long serialVersionUID = 1L;
+    @NotNull @ValidUUID
+    private String id = UUID.randomUUID().toString();
     @Size(min = 1, max = 25)
     private String portion;
     @NotNull
@@ -27,10 +31,16 @@ public class IngredientDomainObject implements Serializable {
     @Size(min = 1, max = 255)
     private String comment;
 
-    IngredientDomainObject() {
-    
+    private IngredientDomainObject() {
+        super();
     }
 
+    public IngredientDomainObject(final String id, final String portion, final String description, final String comment) {
+        this(portion, description, comment);
+        Validate.notNull(id);
+        this.id = id;
+    }
+    
     public IngredientDomainObject(final String portion, final String description, final String comment) {
         this(portion, description);
         Validate.notNull(comment);
@@ -44,7 +54,7 @@ public class IngredientDomainObject implements Serializable {
     }
     
     public IngredientDomainObject(final String description) {
-        super();
+        this();
         Validate.notNull(description);
         this.description = description;
     }
@@ -60,10 +70,14 @@ public class IngredientDomainObject implements Serializable {
     public Optional<String> getComment() {
         return Optional.ofNullable(comment);
     }
+    
+    public String getId() {
+        return id;
+    }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(portion).append(description).append(comment).toHashCode();
+        return new HashCodeBuilder(17, 37).append(id).append(portion).append(description).append(comment).toHashCode();
     }
 
     @Override
@@ -78,13 +92,13 @@ public class IngredientDomainObject implements Serializable {
             return false;
         }
         IngredientDomainObject rhs = (IngredientDomainObject) obj;
-        return new EqualsBuilder().append(portion, rhs.portion)
+        return new EqualsBuilder().append(id, rhs.id).append(portion, rhs.portion)
                         .append(description, rhs.description).append(comment, rhs.comment)
                         .isEquals();
     }
 
     @Override
     public String toString() {
-        return new StrBuilder().append(portion).append(description).append(comment).build();
+        return new ToStringBuilder(this).append(id).append(portion).append(description).append(comment).build();
     }
 }
